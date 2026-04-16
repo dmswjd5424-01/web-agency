@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹에이전시 - 전환을 만드는 설계</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-blue: #2563eb;
+            --text-dark: #111827;
+            --text-gray: #4b5563;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            scroll-behavior: smooth;
+            word-break: keep-all;
+        }
+
+        .sticky-header {
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        .heading-tighter {
+            letter-spacing: -0.05em;
+        }
+
+        .content-relaxed {
+            line-height: 1.8;
+            letter-spacing: -0.01em;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .portfolio-card:hover .portfolio-img {
+            transform: scale(1.05);
+        }
+
+        .mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        /* FAQ Accordion Custom */
+        .faq-item[open] summary i {
+            transform: rotate(180deg);
+        }
+
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900">
+
+    <!-- Header Section -->
+    <header class="sticky-header fixed top-0 left-0 w-full z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="text-2xl font-black text-blue-600 tracking-tighter">AGENCY.AI</a>
+                </div>
+
+                <nav class="hidden md:flex space-x-10 items-center">
+                    <a href="#"
+                        class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">홈</a>
+                    <a href="about.html"
+                        class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">회사소개</a>
+                    <a href="service.html"
+                        class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">서비스</a>
+                    <a href="portfolio.html"
+                        class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">포트폴리오</a>
+                    <a href="contact.html"
+                        class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">고객센터</a>
+                </nav>
+
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-[14px] text-gray-500 hover:text-gray-900 font-medium">로그인</a>
+                    <a href="#contact"
+                        class="bg-gray-900 text-white px-7 py-3 rounded-full font-bold text-[15px] hover:bg-blue-600 transition-all shadow-lg">
+                        무료 상담 신청
+                    </a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-900 p-2"><i
+                            class="fa-solid fa-bars-staggered text-2xl"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-gray-900/40 z-[59] hidden backdrop-blur-sm"></div>
+    <div id="mobile-drawer"
+        class="mobile-menu fixed top-0 right-0 w-full max-w-xs h-full bg-white z-[60] shadow-2xl p-8">
+        <div class="flex justify-between items-center mb-10">
+            <span class="text-2xl font-black text-blue-600">AGENCY.AI</span>
+            <button id="close-menu-btn" class="text-gray-400 hover:text-gray-900 transition-colors"><i
+                    class="fa-solid fa-xmark text-3xl"></i></button>
+        </div>
+        <nav class="flex flex-col space-y-7">
+            <a href="#" class="text-xl font-bold text-gray-900">홈</a>
+            <a href="#" class="text-xl font-bold text-gray-900">회사소개</a>
+            <a href="#" class="text-xl font-bold text-gray-900">서비스</a>
+            <a href="#" class="text-xl font-bold text-gray-900">포트폴리오</a>
+            <a href="#" class="text-xl font-bold text-gray-900">고객센터</a>
+        </nav>
+    </div>
+
+    <main>
+        <!-- 🔹 Hero Section -->
+        <section class="relative pt-32 pb-20 md:pt-56 md:pb-40 overflow-hidden">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10 text-center">
+                <div class="animate-fade-up">
+                    <span
+                        class="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-tight text-blue-600 bg-blue-50 rounded-full">성과로
+                        증명하는 웹에이전시</span>
+                    <h1 class="heading-tighter text-4xl md:text-7xl font-black text-gray-900 mb-8 leading-[1.15]">
+                        당신의 홈페이지는<br>
+                        <span class="gradient-text">돈을 벌어다 주고 있습니까?</span>
+                    </h1>
+                    <p class="content-relaxed text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-12 font-medium">
+                        단순히 예쁜 디자인을 넘어, 비즈니스의 매출을 극대화하는<br class="hidden md:block"> 최적화된 유입 동선과 전환 설계를 제안합니다.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="#contact"
+                            class="w-full sm:w-auto px-10 py-5 bg-blue-600 text-white rounded-full font-bold text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-200">무료
+                            진단 신청하기</a>
+                        <a href="#portfolio"
+                            class="w-full sm:w-auto px-10 py-5 bg-white text-gray-900 border border-gray-200 rounded-full font-bold text-lg hover:bg-gray-50 transition-all">제작
+                            사례 보기</a>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-50/50 via-transparent to-transparent -z-10">
+            </div>
+        </section>
+
+        <!-- 🔹 Section 1: 문제 제기 (Problem) -->
+        <section class="py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-center">
+                <h2 class="heading-tighter text-3xl md:text-4xl font-black mb-16 tracking-tighter italic">아직도 디자인만 보고
+                    결정하시나요?</h2>
+                <div class="grid md:grid-cols-3 gap-8 text-left">
+                    <div class="bg-white p-10 rounded-[40px] shadow-sm border border-gray-100">
+                        <i class="fa-solid fa-face-frown text-4xl text-blue-600 mb-6"></i>
+                        <h4 class="text-xl font-bold mb-4">방문객은 많은데<br>왜 문의는 없을까요?</h4>
+                        <p class="text-gray-500 leading-relaxed">디자인에만 치중하여 고객이 행동해야 할 핵심 동선을 놓치고 있기 때문입니다.</p>
+                    </div>
+                    <div class="bg-white p-10 rounded-[40px] shadow-sm border border-gray-100">
+                        <i class="fa-solid fa-gauge-high text-4xl text-blue-600 mb-6"></i>
+                        <h4 class="text-xl font-bold mb-4">느린 속도와<br>복잡한 모바일 환경</h4>
+                        <p class="text-gray-500 leading-relaxed">모바일에서 3초 이상 지연되면 고객의 50%는 경쟁사로 떠납니다.</p>
+                    </div>
+                    <div class="bg-white p-10 rounded-[40px] shadow-sm border border-gray-100">
+                        <i class="fa-solid fa-ghost text-4xl text-blue-600 mb-6"></i>
+                        <h4 class="text-xl font-bold mb-4">만들어 놓고<br>방치되는 홈페이지</h4>
+                        <p class="text-gray-500 leading-relaxed">지속적인 관리와 검색 엔진 최적화가 없다면 홈페이지는 유령 도시가 됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔹 Section 2: 해결책 (Solution) -->
+        <section class="py-24 md:py-32 bg-white">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-20 items-center">
+                    <div>
+                        <span class="text-blue-600 font-bold tracking-widest text-sm mb-4 block">OUR SOLUTION</span>
+                        <h2 class="heading-tighter text-3xl md:text-5xl font-black text-gray-900 mb-8 leading-tight">
+                            단순한 제작을 넘어<br>
+                            <span class="text-blue-600">비즈니스의 본질</span>을 설계합니다.
+                        </h2>
+                        <div class="space-y-8 mt-12">
+                            <div class="flex items-start gap-6">
+                                <div
+                                    class="w-12 h-12 shrink-0 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 font-bold text-xl">
+                                    1</div>
+                                <div>
+                                    <h4 class="text-xl font-black text-gray-900 mb-2">성과 중심의 전략 기획</h4>
+                                    <p class="text-gray-500 leading-relaxed">타겟의 심리를 자극하는 카피라이팅과 레이아웃으로 구매를 유도합니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-6">
+                                <div
+                                    class="w-12 h-12 shrink-0 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 font-bold text-xl">
+                                    2</div>
+                                <div>
+                                    <h4 class="text-xl font-black text-gray-900 mb-2">UX/UI 최적화 설계</h4>
+                                    <p class="text-gray-500 leading-relaxed">어떤 기기에서도 막힘없는 사용자 경험을 제공하여 이탈률을 방지합니다.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-6">
+                                <div
+                                    class="w-12 h-12 shrink-0 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 font-bold text-xl">
+                                    3</div>
+                                <div>
+                                    <h4 class="text-xl font-black text-gray-900 mb-2">체계적인 사후 관리</h4>
+                                    <p class="text-gray-500 leading-relaxed">안정적인 서버 운영과 데이터 기반의 마케팅 전략을 함께 지원합니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="relative bg-blue-50 rounded-[60px] p-12 overflow-hidden shadow-2xl flex items-center justify-center aspect-square">
+                        <div class="text-center">
+                            <i class="fa-solid fa-rocket text-[120px] text-blue-200 mb-8"></i>
+                            <div class="bg-white p-8 rounded-3xl shadow-xl">
+                                <p class="text-gray-400 font-bold text-sm mb-1 uppercase tracking-widest">문의 전환율</p>
+                                <p class="text-5xl font-black text-blue-600">+285%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔹 Section 3: 서비스 (Service) -->
+        <section class="py-24 md:py-32 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="heading-tighter text-3xl md:text-5xl font-black text-gray-900 mb-6 tracking-tighter">성장을
+                        위한 통합 솔루션</h2>
+                    <p class="text-lg text-gray-500 font-medium">귀사의 비즈니스 단계에 맞춘 전문 서비스를 제공합니다.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div
+                        class="service-card bg-white p-10 rounded-[40px] border border-gray-100 hover:shadow-xl transition-all">
+                        <div
+                            class="service-icon w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-8">
+                            <i class="fa-solid fa-laptop-code"></i></div>
+                        <h4 class="text-xl font-black text-gray-900 mb-4">홈페이지 제작</h4>
+                        <p class="text-gray-500 text-[15px] mb-8">브랜드 정체성과 실질적인 전환율을 동시에 잡는 고효율 웹사이트</p>
+                        <span class="text-xs font-bold text-blue-600">#랜딩페이지 #기업형</span>
+                    </div>
+                    <div
+                        class="service-card bg-white p-10 rounded-[40px] border border-gray-100 hover:shadow-xl transition-all">
+                        <div
+                            class="service-icon w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-8">
+                            <i class="fa-solid fa-cart-shopping"></i></div>
+                        <h4 class="text-xl font-black text-gray-900 mb-4">쇼핑몰 제작</h4>
+                        <p class="text-gray-500 text-[15px] mb-8">매출로 직결되는 강력한 결제 시스템과 UX 최적화 솔루션</p>
+                        <span class="text-xs font-bold text-purple-600">#이커머스 #커스텀결제</span>
+                    </div>
+                    <div
+                        class="service-card bg-white p-10 rounded-[40px] border border-gray-100 hover:shadow-xl transition-all">
+                        <div
+                            class="service-icon w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mb-8">
+                            <i class="fa-solid fa-wrench"></i></div>
+                        <h4 class="text-xl font-black text-gray-900 mb-4">유지보수</h4>
+                        <p class="text-gray-500 text-[15px] mb-8">운영의 부담을 덜어주는 실시간 모니터링과 체계적인 관리 서비스</p>
+                        <span class="text-xs font-bold text-emerald-600">#서버관리 #정기점검</span>
+                    </div>
+                    <div
+                        class="service-card bg-white p-10 rounded-[40px] border border-gray-100 hover:shadow-xl transition-all">
+                        <div
+                            class="service-icon w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mb-8">
+                            <i class="fa-solid fa-magnifying-glass"></i></div>
+                        <h4 class="text-xl font-black text-gray-900 mb-4">SEO 마케팅</h4>
+                        <p class="text-gray-500 text-[15px] mb-8">포털 사이트 상위 노출을 통해 잠재 고객을 유입시키는 전략</p>
+                        <span class="text-xs font-bold text-orange-600">#검색엔진최적화 #상위노출</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔹 Section 4: 포트폴리오 (Proof) -->
+        <section id="portfolio" class="py-24 md:py-32 bg-white">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-16">
+                    <div>
+                        <span class="text-blue-600 font-bold tracking-widest text-sm mb-4 block">SUCCESS CASE</span>
+                        <h2 class="heading-tighter text-3xl md:text-5xl font-black text-gray-900 tracking-tighter">데이터로
+                            증명된 성공 사례</h2>
+                    </div>
+                    <a href="#" class="text-lg font-bold text-gray-900 border-b-2 border-gray-900 pb-1">전체 보기 <i
+                            class="fa-solid fa-arrow-right ml-2 text-sm"></i></a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div
+                        class="portfolio-card group bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500">
+                        <div class="aspect-[4/3] bg-gray-200 flex items-center justify-center overflow-hidden"><i
+                                class="fa-solid fa-image text-4xl text-gray-300"></i></div>
+                        <div class="p-8 md:p-10">
+                            <h3
+                                class="text-2xl font-black mb-4 group-hover:text-blue-600 transition-colors tracking-tight italic">
+                                뷰티 브랜드 'A' 몰 리뉴얼</h3>
+                            <p class="text-gray-500 text-[15px] mb-8 leading-relaxed font-medium">구매 여정 단순화로 전환율을 높였습니다.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-gray-200">
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">문의 증가</p>
+                                    <p class="text-xl font-black text-blue-600">+320%</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">이탈 감소</p>
+                                    <p class="text-xl font-black text-gray-900">-45%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="portfolio-card group bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500">
+                        <div class="aspect-[4/3] bg-gray-200 flex items-center justify-center overflow-hidden"><i
+                                class="fa-solid fa-image text-4xl text-gray-300"></i></div>
+                        <div class="p-8 md:p-10">
+                            <h3
+                                class="text-2xl font-black mb-4 group-hover:text-blue-600 transition-colors tracking-tight italic">
+                                로펌 'B' 전문 랜딩 웹</h3>
+                            <p class="text-gray-500 text-[15px] mb-8 leading-relaxed font-medium">신뢰 중심 UI로 상담률을 개선했습니다.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-gray-200">
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">전환율</p>
+                                    <p class="text-xl font-black text-blue-600">18.5%</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">체류시간</p>
+                                    <p class="text-xl font-black text-gray-900">4m 20s</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="portfolio-card group bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500">
+                        <div class="aspect-[4/3] bg-gray-200 flex items-center justify-center overflow-hidden"><i
+                                class="fa-solid fa-image text-4xl text-gray-300"></i></div>
+                        <div class="p-8 md:p-10">
+                            <h3
+                                class="text-2xl font-black mb-4 group-hover:text-blue-600 transition-colors tracking-tight italic">
+                                IT 서비스 'C' 플랫폼</h3>
+                            <p class="text-gray-500 text-[15px] mb-8 leading-relaxed font-medium">유저 편의성 극대화 및 고성능 인프라
+                                구축.</p>
+                            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-gray-200">
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">속도</p>
+                                    <p class="text-xl font-black text-blue-600">0.8s</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">만족도</p>
+                                    <p class="text-xl font-black text-gray-900">4.9/5.0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="portfolio-card group bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 hidden md:block lg:hidden">
+                        <div class="aspect-[4/3] bg-gray-200 flex items-center justify-center"><i
+                                class="fa-solid fa-image text-4xl text-gray-300"></i></div>
+                        <div class="p-8 md:p-10">
+                            <h3 class="text-2xl font-black mb-4">교육 플랫폼 리뉴얼</h3>
+                            <p class="text-gray-500 text-[15px] mb-8">수강 완료율을 높이는 최적의 학습 관리 UI.</p>
+                            <div class="grid grid-cols-2 gap-4 pt-6 border-t border-gray-200">
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">수강 완료</p>
+                                    <p class="text-xl font-black text-blue-600">+80%</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-gray-400 mb-1 uppercase">만족도</p>
+                                    <p class="text-xl font-black text-gray-900">96%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔹 Section 5: 차별화 (Why Us) -->
+        <section class="py-24 md:py-32 bg-gray-900 text-white overflow-hidden relative">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-20">
+                    <span class="text-blue-400 font-bold tracking-widest text-sm mb-4 block uppercase">Why Choose
+                        Us</span>
+                    <h2 class="heading-tighter text-3xl md:text-5xl font-black mb-6">왜 AGENCY.AI여야 하는가?</h2>
+                    <p class="text-gray-400 text-lg">우리는 타협하지 않는 퀄리티로 비즈니스의 격을 높입니다.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="flex gap-8 group">
+                        <div
+                            class="w-16 h-16 shrink-0 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 text-3xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-users-gear"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-3">100% 내부 제작 원칙</h4>
+                            <p class="text-gray-400 leading-relaxed font-medium">외주 재하청 없이 전문 인력이 직접 기획부터 개발까지 책임집니다.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-8 group">
+                        <div
+                            class="w-16 h-16 shrink-0 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 text-3xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-microchip"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-3">AI 자동화 기반 제작</h4>
+                            <p class="text-gray-400 leading-relaxed font-medium">검색어 트렌드 분석과 AI 최적화 도구를 활용해 유입과 전환을
+                                극대화합니다.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-8 group">
+                        <div
+                            class="w-16 h-16 shrink-0 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 text-3xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-layer-group"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-3">통합 프로세스 지원</h4>
+                            <p class="text-gray-400 leading-relaxed font-medium">기획, 디자인, 개발뿐만 아니라 초기 마케팅 세팅까지 한 번에
+                                해결하세요.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-8 group">
+                        <div
+                            class="w-16 h-16 shrink-0 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-400 text-3xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                            <i class="fa-solid fa-screwdriver-wrench"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-bold mb-3">책임 지는 유지보수</h4>
+                            <p class="text-gray-400 leading-relaxed font-medium">제작 후 방치되지 않도록 매월 보안 점검과 업데이트 리포트를
+                                제공합니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full"></div>
+        </section>
+
+        <!-- 🔹 Section 6: 후기 (Testimonials) -->
+        <section class="py-24 md:py-32 bg-white">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="heading-tighter text-3xl md:text-4xl font-black mb-4">함께한 파트너의 목소리</h2>
+                    <p class="text-gray-500 font-medium">95% 이상의 높은 고객 만족도가 우리의 실력을 증명합니다.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-gray-50 p-10 rounded-[40px] border border-gray-100">
+                        <div class="flex gap-1 text-orange-400 mb-6"><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="content-relaxed text-gray-700 font-medium mb-8">"빠른 대응과 높은 퀄리티가 정말 만족스러웠습니다. 리뉴얼 이후 실제
+                            매출이 2배 넘게 성장해서 매우 기쁩니다."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-gray-200">
+                            <div
+                                class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500">
+                                K</div>
+                            <div>
+                                <p class="font-bold text-gray-900">김OO 대표</p>
+                                <p class="text-xs text-gray-400 uppercase">Beauty Brand A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-10 rounded-[40px] border border-gray-100">
+                        <div class="flex gap-1 text-orange-400 mb-6"><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="content-relaxed text-gray-700 font-medium mb-8">"복잡한 기능들을 깔끔한 인터페이스로 구현해주셨어요. 덕분에 내부
+                            운영 리소스가 획기적으로 줄어들었습니다."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-gray-200">
+                            <div
+                                class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500">
+                                L</div>
+                            <div>
+                                <p class="font-bold text-gray-900">이OO 팀장</p>
+                                <p class="text-xs text-gray-400 uppercase">IT Service C</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-10 rounded-[40px] border border-gray-100">
+                        <div class="flex gap-1 text-orange-400 mb-6"><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="content-relaxed text-gray-700 font-medium mb-8">"기획 단계부터 전문가라는 느낌이 확 들었습니다. 단순 외주 업체가
+                            아닌 비즈니스 파트너로서의 역할을 다해주셨네요."</p>
+                        <div class="flex items-center gap-4 pt-6 border-t border-gray-200">
+                            <div
+                                class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500">
+                                P</div>
+                            <div>
+                                <p class="font-bold text-gray-900">박OO 대표</p>
+                                <p class="text-xs text-gray-400 uppercase">Law Firm B</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔹 Section 7: 중간 CTA -->
+        <section class="py-16 md:py-24 bg-blue-600 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-center relative z-10">
+                <h2 class="text-3xl md:text-5xl font-black text-white mb-8 tracking-tighter">망설이는 사이 경쟁업체는 앞서가고 있습니다.
+                </h2>
+                <p class="text-blue-100 text-lg md:text-xl mb-12 font-medium">지금 무료로 홈페이지 진단부터 받아보세요.</p>
+                <a href="#contact"
+                    class="inline-block px-12 py-5 bg-white text-blue-600 rounded-full font-black text-xl hover:bg-gray-100 transition-all shadow-2xl">3분
+                    상담 시작하기</a>
+            </div>
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                <div class="absolute top-1/2 left-1/4 w-96 h-96 bg-white blur-[100px] rounded-full"></div>
+            </div>
+        </section>
+
+        <!-- 🔹 Section 8: FAQ -->
+        <section class="py-24 md:py-32 bg-white">
+            <div class="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="heading-tighter text-3xl md:text-4xl font-black mb-4 uppercase">자주 묻는 질문</h2>
+                    <p class="text-gray-500 font-medium">궁금해하실 내용을 미리 정리했습니다.</p>
+                </div>
+                <div class="space-y-4">
+                    <details class="faq-item group bg-gray-50 rounded-3xl overflow-hidden border border-gray-100" open>
+                        <summary class="flex justify-between items-center p-8 cursor-pointer list-none">
+                            <h4 class="text-lg font-bold text-gray-900">제작 기간은 얼마나 걸리나요?</h4>
+                            <i
+                                class="fa-solid fa-chevron-down text-gray-400 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="p-8 pt-0 text-gray-500 leading-relaxed font-medium">
+                            프로젝트의 규모와 복잡도에 따라 다르지만, 일반적인 기업형 홈페이지는 3~5주 내외, 쇼핑몰은 5~8주 정도 소요됩니다. 기획이 확정된 후 신속하게 진행됩니다.
+                        </div>
+                    </details>
+                    <details class="faq-item group bg-gray-50 rounded-3xl overflow-hidden border border-gray-100">
+                        <summary class="flex justify-between items-center p-8 cursor-pointer list-none">
+                            <h4 class="text-lg font-bold text-gray-900">유지보수는 어떻게 진행되나요?</h4>
+                            <i class="fa-solid fa-chevron-down text-gray-400 transition-transform"></i>
+                        </summary>
+                        <div class="p-8 pt-0 text-gray-500 leading-relaxed font-medium">
+                            정기 보안 점검, 데이터 백업, 마이너 업데이트를 포함한 유지보수 플랜을 제공합니다. 문제 발생 시 실시간 대응 채널을 통해 즉시 해결해 드립니다.
+                        </div>
+                    </details>
+                    <details class="faq-item group bg-gray-50 rounded-3xl overflow-hidden border border-gray-100">
+                        <summary class="flex justify-between items-center p-8 cursor-pointer list-none">
+                            <h4 class="text-lg font-bold text-gray-900">비용은 어떻게 산정되나요?</h4>
+                            <i class="fa-solid fa-chevron-down text-gray-400 transition-transform"></i>
+                        </summary>
+                        <div class="p-8 pt-0 text-gray-500 leading-relaxed font-medium">
+                            페이지 수, 기능 구현(AI 자동화, 결제 연동 등), 디자인 커스텀 수준에 따라 투명하게 산정됩니다. 초기 상담 후 상세한 견적서를 제공해 드립니다.
+                        </div>
+                    </details>
+                </div>
+            </div>
+            <div class="mt-12 text-center">
+                <a href="contact.html#faq"
+                    class="inline-flex items-center gap-2 px-8 py-4 border-2 border-gray-900 rounded-full font-black text-sm hover:bg-gray-900 hover:text-white transition-all group">
+                    자주 묻는 질문 더 보기
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- 🔹 Section 9: 마무리 CTA (Contact) -->
+        <section id="contact" class="py-24 md:py-32 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-[60px] shadow-2xl overflow-hidden grid lg:grid-cols-2">
+                    <div class="p-12 md:p-20 bg-gray-900 text-white flex flex-col justify-center">
+                        <h2 class="text-3xl md:text-5xl font-black mb-8 leading-tight tracking-tighter">당신의
+                            비즈니스를<br>디지털의 중심으로.</h2>
+                        <p class="text-gray-400 text-lg mb-12 font-medium">지금 바로 무료 진단 및 견적 상담을 신청하세요. 24시간 이내에 전문가가 답변해
+                            드립니다.</p>
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-6">
+                                <i class="fa-solid fa-phone text-blue-500 text-2xl"></i>
+                                <span class="text-xl font-bold">032-1234-1234</span>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <i class="fa-solid fa-envelope text-blue-500 text-2xl"></i>
+                                <span class="text-xl font-bold">hello@agency.ai</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-12 md:p-20">
+                        <form class="space-y-6">
+                            <div><label class="block text-sm font-bold text-gray-700 mb-2">성함 / 회사명</label><input
+                                    type="text"
+                                    class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none font-medium"
+                                    placeholder="홍길동 (주식회사 에이전시)"></div>
+                            <div><label class="block text-sm font-bold text-gray-700 mb-2">연락처</label><input type="tel"
+                                    class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none font-medium"
+                                    placeholder="010-0000-0000"></div>
+                            <div><label class="block text-sm font-bold text-gray-700 mb-2">문의 내용</label><textarea
+                                    rows="4"
+                                    class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none font-medium resize-none"
+                                    placeholder="문의하실 내용을 자유롭게 적어주세요."></textarea></div>
+                            <button type="button"
+                                class="w-full py-5 bg-blue-600 text-white rounded-2xl font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 uppercase tracking-tighter">상담
+                                신청하기</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-950 text-white pt-24 pb-12 border-t border-gray-900">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+
+                <div class="md:col-span-4">
+                    <a href="index.html"
+                        class="text-2xl font-black text-blue-500 tracking-tighter mb-6 block">AGENCY.AI</a>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-8 max-w-xs">
+                        데이터와 인공지능을 결합하여 비즈니스의 성장을 가속화하는 프리미엄 디지털 에이전시입니다.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all"><i
+                                class="fa-brands fa-instagram"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all"><i
+                                class="fa-brands fa-youtube"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all"><i
+                                class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h4 class="font-bold mb-6 text-gray-200">Menu</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm font-medium">
+                            <li><a href="about.html" class="hover:text-white transition-colors">회사소개</a></li>
+                            <li><a href="service.html" class="hover:text-white transition-colors">서비스</a></li>
+                            <li><a href="portfolio.html" class="hover:text-white transition-colors">포트폴리오</a></li>
+                            <li><a href="contact.html" class="hover:text-white transition-colors">고객센터</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold mb-6 text-gray-200">Service</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm font-medium">
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">홈페이지 제작</a>
+                            </li>
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">브랜딩 솔루션</a>
+                            </li>
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">UI/UX
+                                    디자인</a></li>
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">AI 자동화</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold mb-6 text-gray-200">Support</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm font-medium">
+                            <li><a href="contact.html#inquiry-form" class="hover:text-white transition-colors">1:1 상담
+                                    신청</a></li>
+                            <li><a href="contact.html#faq" class="hover:text-white transition-colors">자주 묻는 질문</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">유지보수 가이드</a></li>
+                            <li class="pt-2 text-gray-400">T. 032-1234-1234</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="py-8 border-t border-gray-900 text-gray-600 text-[12px] leading-relaxed">
+                <div class="flex flex-wrap gap-x-6 gap-y-2 mb-4">
+                    <span><strong>주식회사 에이전시 에이아이</strong></span>
+                    <span>대표자 : 홍길동</span>
+                    <span>사업자등록번호 : 123-45-67890</span>
+                    <span>통신판매업신고 : 제 2024-경기부천-1234호</span>
+                </div>
+                <p>Address. 경기도 부천시 부천로29번길 7, 12층 AGENCY.AI</p>
+            </div>
+
+            <div class="pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-gray-600 text-[11px] font-bold uppercase tracking-widest">&copy; 2024 AGENCY.AI. All
+                    rights reserved.</p>
+                <div class="flex space-x-6 text-[11px] text-gray-600 font-bold uppercase tracking-tight">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+
+        const toggleMenu = (isOpen) => {
+            if (isOpen) {
+                mobileDrawer.classList.add('active');
+                mobileOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileDrawer.classList.remove('active');
+                mobileOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        };
+
+        mobileMenuBtn.addEventListener('click', () => toggleMenu(true));
+        closeMenuBtn.addEventListener('click', () => toggleMenu(false));
+        mobileOverlay.addEventListener('click', () => toggleMenu(false));
+
+        // Smooth scroll for anchors
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    if (mobileDrawer.classList.contains('active')) toggleMenu(false);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

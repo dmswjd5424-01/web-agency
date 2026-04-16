@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회사소개 | AGENCY.AI - 전환을 만드는 설계</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        :root {
+            --primary-blue: #2563eb;
+            --text-dark: #111827;
+            --text-gray: #4b5563;
+        }
+
+        body { 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; 
+            scroll-behavior: smooth;
+            word-break: keep-all;
+        }
+
+        .sticky-header { 
+            backdrop-filter: blur(12px); 
+            background-color: rgba(255, 255, 255, 0.85); 
+        }
+
+        .heading-tighter { letter-spacing: -0.05em; }
+        .content-relaxed { line-height: 1.8; letter-spacing: -0.01em; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 타임라인 커스텀 스타일 */
+        .timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, #2563eb, #e5e7eb 90%);
+        }
+        
+        .timeline-dot {
+            box-shadow: 0 0 0 4px white, 0 0 0 7px rgba(37, 99, 235, 0.1);
+        }
+
+        .mobile-menu { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(100%); }
+        .mobile-menu.active { transform: translateX(0); }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <header class="sticky-header fixed top-0 left-0 w-full z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="index.html" class="text-2xl font-black text-blue-600 tracking-tighter">AGENCY.AI</a>
+                </div>
+                <nav class="hidden md:flex space-x-10 items-center">
+                    <a href="index.html" class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">홈</a>
+                    <a href="about.html" class="text-[15px] text-blue-600 font-semibold transition-colors">회사소개</a>
+                    <a href="service.html" class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">서비스</a>
+                    <a href="portfolio.html" class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">포트폴리오</a>
+                    <a href="contact.html" class="text-[15px] text-gray-800 hover:text-blue-600 font-semibold transition-colors">고객센터</a>
+                </nav>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-[14px] text-gray-500 hover:text-gray-900 font-medium">로그인</a>
+                    <a href="contact.html#inquiry-form" class="bg-gray-900 text-white px-7 py-3 rounded-full font-bold text-[15px] hover:bg-blue-600 transition-all shadow-lg">무료 상담 신청</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <section class="py-20 md:py-32 bg-gray-50 border-b border-gray-100">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-center animate-fade-up">
+                <span class="text-blue-600 font-bold tracking-widest text-sm mb-4 block uppercase font-black">About Us</span>
+                <h1 class="heading-tighter text-4xl md:text-6xl font-black text-gray-900 mb-8 leading-[1.2]">
+                    우리는 단순한 웹사이트가 아닌,<br>
+                    <span class="gradient-text">비즈니스의 다음 단계</span>를 만듭니다.
+                </h1>
+                <p class="content-relaxed text-lg md:text-xl text-gray-500 max-w-3xl mx-auto font-medium">
+                    AGENCY.AI는 디자인의 아름다움을 넘어, 데이터와 심리학을 기반으로 고객의 행동을 설계하고 실제 매출 전환을 이끌어내는 디지털 파트너입니다.
+                </p>
+            </div>
+        </section>
+
+        <section class="py-24 md:py-32 bg-white">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-20 items-center">
+                    <div class="relative">
+                        <div class="aspect-[4/5] bg-gray-100 rounded-[60px] overflow-hidden shadow-2xl flex items-center justify-center bg-blue-600">
+                             <i class="fa-solid fa-quote-left text-8xl text-blue-400 opacity-50"></i>
+                        </div>
+                        <div class="absolute -bottom-10 -right-10 bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 hidden md:block">
+                            <p class="text-3xl font-black text-blue-600 mb-2">Since 2020</p>
+                            <p class="text-gray-500 font-bold tracking-tighter">전환율 개선 전문 에이전시</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="heading-tighter text-3xl md:text-5xl font-black text-gray-900 mb-8 tracking-tighter">
+                            "홈페이지는 24시간 일하는<br>최고의 영업사원이어야 합니다."
+                        </h2>
+                        <div class="space-y-6 text-gray-600 text-lg leading-relaxed font-medium">
+                            <p>많은 기업이 수천만 원을 들여 홈페이지를 만들지만, 정작 문의 한 통 오지 않는 '죽은 사이트'로 방치되는 현실을 목격했습니다.</p>
+                            <p>AGENCY.AI는 이러한 문제를 해결하기 위해 탄생했습니다. 우리는 단순히 코드를 짜고 그림을 그리는 기술자가 아닙니다. 고객의 비즈니스를 이해하고, 방문객이 결제 버튼을 누르기까지의 심리적 흐름을 설계하는 전략가입니다.</p>
+                            <p class="text-gray-900 font-bold italic border-l-4 border-blue-600 pl-4">"여러분의 성장이 곧 우리의 존재 이유입니다."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-white overflow-hidden border-t border-gray-50">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <span class="text-blue-600 font-bold tracking-widest text-sm mb-4 block uppercase font-black">History</span>
+                    <h2 class="heading-tighter text-3xl md:text-5xl font-black text-gray-900 tracking-tighter">우리가 걸어온 혁신의 기록</h2>
+                </div>
+
+                <div class="relative">
+                    <div class="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full timeline-line"></div>
+
+                    <div class="space-y-16">
+                        <div class="relative flex flex-col md:flex-row items-center">
+                            <div class="flex flex-1 md:justify-end md:pr-12 w-full pl-12 md:pl-0">
+                                <div class="md:text-right">
+                                    <span class="text-blue-600 font-black text-3xl mb-2 block tracking-tighter">2024</span>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2">AI 기반 웹 솔루션 고도화</h4>
+                                    <p class="text-gray-500 font-medium leading-relaxed">자체 개발 AI 배너 및 랜딩페이지 자동 생성 시스템 도입<br>기술 혁신 부문 우수 에이전시 선정</p>
+                                </div>
+                            </div>
+                            <div class="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600 rounded-full timeline-dot z-10"></div>
+                            <div class="flex-1 hidden md:block"></div>
+                        </div>
+
+                        <div class="relative flex flex-col md:flex-row items-center">
+                            <div class="flex-1 hidden md:block"></div>
+                            <div class="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rounded-full timeline-dot z-10"></div>
+                            <div class="flex flex-1 justify-start md:pl-12 w-full pl-12">
+                                <div>
+                                    <span class="text-gray-400 font-black text-3xl mb-2 block tracking-tighter">2023</span>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2">누적 프로젝트 300건 돌파</h4>
+                                    <p class="text-gray-500 font-medium leading-relaxed">커머스 특화 UX 설계 모듈 개발<br>수도권 주요 IT 스타트업 공식 파트너십 체결</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative flex flex-col md:flex-row items-center">
+                            <div class="flex flex-1 md:justify-end md:pr-12 w-full pl-12 md:pl-0">
+                                <div class="md:text-right">
+                                    <span class="text-gray-400 font-black text-3xl mb-2 block tracking-tighter">2022</span>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2">AGENCY.AI 법인 전환</h4>
+                                    <p class="text-gray-500 font-medium leading-relaxed">기업 부설 디자인 연구소 설립<br>웹 표준 및 접근성 가이드라인 솔루션 출시</p>
+                                </div>
+                            </div>
+                            <div class="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rounded-full timeline-dot z-10"></div>
+                            <div class="flex-1 hidden md:block"></div>
+                        </div>
+
+                        <div class="relative flex flex-col md:flex-row items-center">
+                            <div class="flex-1 hidden md:block"></div>
+                            <div class="absolute left-4 md:left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rounded-full timeline-dot z-10"></div>
+                            <div class="flex flex-1 justify-start md:pl-12 w-full pl-12">
+                                <div>
+                                    <span class="text-gray-400 font-black text-3xl mb-2 block tracking-tighter">2020</span>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2">AGENCY.AI 설립</h4>
+                                    <p class="text-gray-500 font-medium leading-relaxed">데이터 기반 전환율 최적화 팀 구성<br>디지털 마케팅 전략 컨설팅 서비스 개시</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-center">
+                <h2 class="heading-tighter text-3xl md:text-4xl font-black mb-16 tracking-tighter">우리가 지켜나가는 3가지 원칙</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-12 rounded-[50px] shadow-sm hover:shadow-xl transition-all border border-gray-100 text-center">
+                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-8 mx-auto"><i class="fa-solid fa-bullseye"></i></div>
+                        <h4 class="text-2xl font-black mb-4 tracking-tighter">결과 중심 (Outcome)</h4>
+                        <p class="text-gray-500 leading-relaxed font-medium text-[15px]">단순한 '기능' 구현이 아닌, 고객의 매출 증대와 브랜드 가치 상승이라는 '결과'에 집중합니다.</p>
+                    </div>
+                    <div class="bg-white p-12 rounded-[50px] shadow-sm hover:shadow-xl transition-all border border-gray-100 text-center">
+                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-8 mx-auto"><i class="fa-solid fa-handshake-angle"></i></div>
+                        <h4 class="text-2xl font-black mb-4 tracking-tighter">동반 성장 (Partnership)</h4>
+                        <p class="text-gray-500 leading-relaxed font-medium text-[15px]">일회성 외주 업체가 아닌, 비즈니스 방향성을 함께 고민하는 든든한 파트너가 되어 드립니다.</p>
+                    </div>
+                    <div class="bg-white p-12 rounded-[50px] shadow-sm hover:shadow-xl transition-all border border-gray-100 text-center">
+                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-8 mx-auto"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h4 class="text-2xl font-black mb-4 tracking-tighter">본질적 혁신 (Innovation)</h4>
+                        <p class="text-gray-500 leading-relaxed font-medium text-[15px]">유행을 쫓는 디자인이 아닌, 브랜드의 본질을 가장 효과적으로 전달할 수 있는 기술과 감각을 결합합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 md:py-32 bg-white">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+                <div class="text-center mb-20">
+                    <h2 class="heading-tighter text-3xl md:text-5xl font-black text-gray-900 tracking-tighter mb-6">숫자로 증명하는 전문성</h2>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <p class="text-gray-400 font-bold mb-2 uppercase tracking-widest text-xs">누적 프로젝트</p>
+                        <p class="text-5xl md:text-6xl font-black text-blue-600 tracking-tighter">350+</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-gray-400 font-bold mb-2 uppercase tracking-widest text-xs">평균 매출 상승</p>
+                        <p class="text-5xl md:text-6xl font-black text-blue-600 tracking-tighter">215%</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-gray-400 font-bold mb-2 uppercase tracking-widest text-xs">고객 유지율</p>
+                        <p class="text-5xl md:text-6xl font-black text-blue-600 tracking-tighter">92%</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-gray-400 font-bold mb-2 uppercase tracking-widest text-xs">내부 전문가</p>
+                        <p class="text-5xl md:text-6xl font-black text-blue-600 tracking-tighter">15명</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-gray-900 text-white relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-center relative z-10">
+                <h2 class="heading-tighter text-3xl md:text-5xl font-black mb-8">여러분의 다음 성공 스토리,<br>AGENCY.AI와 시작하세요.</h2>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <a href="contact.html#inquiry-form" class="px-12 py-5 bg-blue-600 text-white rounded-full font-black text-xl hover:bg-blue-700 transition-all shadow-2xl">상담 신청하기</a>
+                    <a href="portfolio.html" class="px-12 py-5 bg-white text-gray-900 rounded-full font-black text-xl hover:bg-gray-100 transition-all shadow-2xl">포트폴리오 보기</a>
+                </div>
+            </div>
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                <div class="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-blue-600 blur-[150px] rounded-full"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-950 text-white pt-24 pb-12 border-t border-gray-900">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+                
+                <div class="md:col-span-4">
+                    <a href="index.html" class="text-2xl font-black text-blue-500 tracking-tighter mb-6 block">AGENCY.AI</a>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-8 max-w-xs">
+                        데이터와 인공지능을 결합하여 비즈니스의 성장을 가속화하는 프리미엄 디지털 에이전시입니다.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div>
+                        <h4 class="font-bold mb-6 text-gray-200">Menu</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm font-medium">
+                            <li><a href="about.html" class="hover:text-white transition-colors">회사소개</a></li>
+                            <li><a href="service.html" class="hover:text-white transition-colors">서비스</a></li>
+                            <li><a href="portfolio.html" class="hover:text-white transition-colors">포트폴리오</a></li>
+                            <li><a href="contact.html" class="hover:text-white transition-colors">고객센터</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold mb-6 text-gray-200">Service</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm font-medium">
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">홈페이지 제작</a></li>
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">브랜딩 솔루션</a></li>
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">UI/UX 디자인</a></li>
+                            <li><a href="service.html#web-design" class="hover:text-white transition-colors">AI 자동화</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold mb-6 text-gray-200">Support</h4>
+                        <ul class="space-y-4 text-gray-500 text-sm font-medium">
+                            <li><a href="contact.html#inquiry-form" class="hover:text-white transition-colors">1:1 상담 신청</a></li>
+                            <li><a href="contact.html#faq" class="hover:text-white transition-colors">자주 묻는 질문</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors">유지보수 가이드</a></li>
+                            <li class="pt-2 text-gray-400">T. 032-1234-1234</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="py-8 border-t border-gray-900 text-gray-600 text-[12px] leading-relaxed">
+                <div class="flex flex-wrap gap-x-6 gap-y-2 mb-4">
+                    <span><strong>주식회사 에이전시 에이아이</strong></span>
+                    <span>대표자 : 홍길동</span>
+                    <span>사업자등록번호 : 123-45-67890</span>
+                    <span>통신판매업신고 : 제 2024-경기부천-1234호</span>
+                </div>
+                <p>Address. 경기도 부천시 부천로29번길 7, 12층 AGENCY.AI</p>
+            </div>
+
+            <div class="pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-gray-600 text-[11px] font-bold uppercase tracking-widest">&copy; 2024 AGENCY.AI. All rights reserved.</p>
+                <div class="flex space-x-6 text-[11px] text-gray-600 font-bold uppercase tracking-tight">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
